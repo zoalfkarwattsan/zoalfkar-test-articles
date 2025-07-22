@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+    app:
+        build:
+            context: ./Test-Article-Backend
+            dockerfile: Dockerfile
+        container_name: laravel_app
+        volumes:
+            - ./Test-Article-Backend:/var/www
+            - ./Test-Article-Backend/docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        networks:
+            - app-network
+
+    webserver:
+        image: nginx:alpine
+        container_name: laravel_webserver
+        depends_on:
+            - app
+        volumes:
+            - ./Test-Article-Backend:/var/www
+            - ./Test-Article-Backend/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+        ports:
+            - "8080:80"
+        networks:
+            - app-network
+
+    db:
+        image: mysql:8.0
+        container_name: laravel_db
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: laravel
+            MYSQL_USER: laravel
+            MYSQL_PASSWORD: secret
+        volumes:
+            - dbdata:/var/lib/mysql
+        networks:
+            - app-network
+    
+    react:
+        build:
+          context: ./Test-Article-Frontend
+          dockerfile: Dockerfile
+        container_name: react_frontend
+        ports:
+          - "3000:3000"
+        stdin_open: true
+        tty: true
+        networks:
+          - app-network
+
+volumes:
+    dbdata:
+
+networks:
+    app-network:
