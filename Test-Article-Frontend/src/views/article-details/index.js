@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react'
 import {Link, useParams} from 'react-router-dom'
+
 import {_getArticleDetails, _getArticles} from "../../redux/actions/auth/index"
 import {Button, Card, CardBody, CardHeader,
   CardTitle,
   CardText, Col, Container, Row, Media} from "reactstrap"
 import AddModal from "./add-modal"
 import {Plus, CornerUpLeft} from "react-feather"
+import Avatar from "../../@core/components/avatar"
 
 function ArticleList() {
   const [article, setArticle] = useState([])
@@ -52,6 +54,11 @@ function ArticleList() {
           </Col>
         </Row>
         <Row>
+          <Col className={'d-flex justify-content-between align-items-center'}>
+          <h4>Comments</h4>
+          </Col>
+        </Row>
+        <Row>
           {
             article?.comments?.map((comment, index) => {
               return (
@@ -59,6 +66,7 @@ function ArticleList() {
                   <Card>
                     <CardBody>
                       <Media>
+                        <Avatar className='mr-75' img={require("@src/assets/images/portrait/small/avatar-s-11.jpg").default} width='38' height='38' />
                         <Media body>
                           <h6 className='font-weight-bolder mb-25'>{comment.author_name}</h6>
                           <CardText>{new Date(comment.created_at).toLocaleDateString()}</CardText>

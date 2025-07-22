@@ -11,6 +11,9 @@ services:
             - ./Test-Article-Backend/docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
         networks:
             - app-network
+        depends_on:
+            - db
+        command: sh -c "php artisan migrate && php-fpm"
 
     webserver:
         image: nginx:alpine
@@ -44,7 +47,7 @@ services:
           dockerfile: Dockerfile
         container_name: react_frontend
         ports:
-          - "8081:8081"
+          - "8081:3000"
         stdin_open: true
         tty: true
         networks:
